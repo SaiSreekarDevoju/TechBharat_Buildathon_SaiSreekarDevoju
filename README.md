@@ -770,3 +770,7 @@ Evaluation Websites         8 / 8 PASS
 ## Lumen
 
 **The information is already on the screen. Understanding it shouldn't require leaving the screen.**
+
+
+<img width="1904" height="873" alt="Screenshot 2026-08-07 145518" src="https://github.com/user-attachments/assets/56ca1fa3-201f-4dfe-8572-97caa8b789b5" />
+
