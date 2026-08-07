@@ -1,92 +1,80 @@
 # Lumen — On-Screen Intelligence
 
-> **Turn anything on your screen into structured, actionable intelligence — without leaving the page.**
+> A Manifest V3 Chrome extension that turns the content already on your screen into a structured, actionable brief — without the copy → switch tab → paste → prompt workflow.
 
-**Lumen** is a Manifest V3 Chrome extension built for the **TechBharat Cohort #2 Buildathon — Use Case A: On-Screen Summarization**.
+Built for the **TechBharat Cohort #2 Buildathon — Use Case A: On-Screen Summarization**.
 
-Instead of forcing users to select content, copy it, switch tabs, paste it into a chatbot, and repeatedly provide context, Lumen brings AI directly to the content the user is already viewing.
-
-It supports **whole-page summarization, strict selected-text analysis, visual region understanding, grounded follow-up Q&A, multilingual output, privacy redaction, local history, and tab-isolated intelligence** — all inside a native Chrome side-panel workflow.
+Lumen works directly with the content a user is viewing. It can summarize an entire webpage, analyze only highlighted text, understand a selected visual region, and answer follow-up questions using the same captured context.
 
 ---
 
-## 🎯 The Problem
+## Why Lumen
 
-Knowledge workers spend hours inside browsers reading:
+A large part of the work we do in a browser is reading.
 
-* Long articles and news reports
-* Technical documentation
-* Research papers
-* GitHub pull requests
-* Dashboards and charts
-* Internal documents
-* Regional-language content
-* Dense webpages
+Long articles, documentation, research papers, pull requests, dashboards and reports already contain the information we need. The unnecessary part is moving that information somewhere else just to understand it.
 
-The information is already on the screen.
-
-The problem is the effort required to understand it.
-
-The traditional workflow looks like:
+The usual workflow is:
 
 ```text
-Read → Select → Copy → Switch Tab → Paste → Prompt → Read → Switch Back
+Read → Select → Copy → Open Chatbot → Paste → Explain Context → Ask
 ```
 
-Lumen replaces it with:
+With Lumen:
 
 ```text
-See → Capture → Understand → Ask
+Open Lumen → Choose Capture Mode → Get Brief → Ask Follow-ups
 ```
 
----
-
-# ✨ What Lumen Does
-
-Lumen provides three explicit capture modes.
-
-### 📄 Whole Page
-
-Extracts the readable content of the current webpage and converts it into a structured brief.
-
-Designed for:
-
-* Long articles
-* Documentation
-* News
-* Technical pages
-* Research content
-* Dense webpages
-
-Long contexts are processed without requiring the user to manually copy or split the content.
-
-### ✂️ Current Selection
-
-Analyzes **only the text explicitly highlighted by the user**.
-
-No surrounding webpage content is silently added.
-
-Follow-up questions remain grounded in the original selected text, making this mode useful when the user needs precise analysis of a paragraph, section, quote, or code explanation.
-
-### ⛶ Draw a Region
-
-The user draws a rectangle around a visible region such as:
-
-* Chart
-* Dashboard
-* KPI
-* Table
-* Graph
-* Infographic
-* Visual report section
-
-Lumen captures the visible browser tab, crops the exact selected rectangle, and routes the image to a dedicated vision model for analysis.
+The source stays in front of the user throughout the process.
 
 ---
 
-# 🧠 Predictable Structured Intelligence
+## Capture Modes
 
-Every Lumen brief follows the same structure:
+Lumen has three capture modes, each with a strict context boundary.
+
+### Whole Page
+
+Extracts the readable content of the current webpage and creates a structured brief.
+
+This is intended for long articles, documentation, news, technical pages and other text-heavy webpages.
+
+For pages that exceed the model's practical request size, the extracted content is processed in chunks and combined before the final brief is generated.
+
+### Current Selection
+
+Uses only the text highlighted by the user.
+
+The rest of the webpage is not silently included in the prompt.
+
+Follow-up questions in this mode continue to use the captured selection rather than switching back to whole-page context.
+
+### Draw a Region
+
+Allows the user to draw a rectangle over a visible part of the webpage.
+
+The extension:
+
+```text
+Region Selection
+      ↓
+Visible Tab Capture
+      ↓
+Exact Region Crop
+      ↓
+Vision Analysis
+      ↓
+Structured Brief
+```
+
+This mode is useful for dashboards, charts, tables, KPIs, graphs and other visual information that cannot be reliably understood through DOM text extraction alone.
+
+---
+
+## Structured Brief
+
+Every capture produces the same six-section output:
 
 1. **Summary**
 2. **Key Points**
@@ -95,75 +83,172 @@ Every Lumen brief follows the same structure:
 5. **Decisions**
 6. **Risks**
 
-This makes outputs easier to scan and act upon than an unstructured AI response.
-
-If information for a section does not exist in the captured source, Lumen reports that it was **not found in the context** rather than inventing information.
+If the captured source does not contain information for a section, Lumen reports it as not found instead of filling the section with unrelated information.
 
 ---
 
-# 🚀 Core Capabilities
+## Features
 
-| Capability                | Implementation                                                                          |
-| ------------------------- | --------------------------------------------------------------------------------------- |
-| **Manifest V3**           | Service worker + Chrome Side Panel API                                                  |
-| **Invocation**            | Toolbar action + `Alt + Shift + S`                                                      |
-| **Whole Page**            | Structured DOM content extraction                                                       |
-| **Current Selection**     | Strict highlighted-text-only capture                                                    |
-| **Draw a Region**         | Rectangle → screenshot → exact crop → vision analysis                                   |
-| **Structured Briefs**     | Summary, Key Points, Actions, Metrics, Decisions, Risks                                 |
-| **Follow-up Chat**        | Reuses the exact original capture context                                               |
-| **Long Context Handling** | Processes large webpage contexts instead of failing with a simple “too long” response   |
-| **Multilingual Output**   | English, Hindi, Telugu, Tamil, Bengali, Marathi                                         |
-| **Language Validation**   | Target-language/script validation with repair when required                             |
-| **Text Models**           | Multiple Groq-hosted text model choices                                                 |
-| **Vision Analysis**       | Dedicated vision model routing for region captures                                      |
-| **Tab Isolation**         | Independent summary, chat, language, models and state per browser tab                   |
-| **State Persistence**     | Existing tab intelligence remains available while switching between tabs                |
-| **New-Tab Isolation**     | New tabs start with a clean Lumen workspace                                             |
-| **Regenerate Brief**      | Regenerates the existing capture when output language changes                           |
-| **Privacy Redaction**     | Sensitive identifiers are redacted before transmitted text is processed                 |
-| **Local History**         | Summary history stored locally through Chrome storage                                   |
-| **Failure Honesty**       | Restricted/unreadable pages return explicit limitations instead of fabricated summaries |
+| Feature             | Implementation                                                               |
+| ------------------- | ---------------------------------------------------------------------------- |
+| Whole Page          | Structured DOM extraction with long-context handling                         |
+| Current Selection   | Strict selected-text-only capture                                            |
+| Draw a Region       | Rectangle selection → screenshot → crop → vision analysis                    |
+| Structured Output   | Summary, Key Points, Actions, Metrics, Decisions and Risks                   |
+| Follow-up Q&A       | Questions use the original capture context                                   |
+| Streaming           | Summary and follow-up responses are streamed into the panel                  |
+| Long Pages          | Large extracted contexts are chunked before final synthesis                  |
+| Multilingual Output | English, Hindi, Telugu, Tamil, Bengali and Marathi                           |
+| Language Refresh    | Existing capture can be regenerated in another language                      |
+| Privacy Redaction   | Sensitive identifiers are redacted before transmitted text is processed      |
+| Tab Isolation       | Summary, conversation and capture state are maintained independently per tab |
+| Tab Persistence     | Returning to a previously summarized tab restores its existing state         |
+| Local History       | Previous summaries can be stored and accessed locally                        |
+| Source Highlighting | Key points can be traced back to relevant source content                     |
+| Failure Handling    | Unsupported/restricted pages return a clear capture limitation               |
 
 ---
 
-# 🤖 AI Routing
+## Follow-up Q&A
 
-Lumen deliberately separates text understanding from visual understanding.
+Lumen keeps the context used to create each brief.
+
+That context is also used for subsequent questions.
 
 ```text
-                     ┌─────────────────────┐
-Webpage ────────────►│                     │
-                     │     Text Model      │──────┐
-Selection ──────────►│                     │      │
-                     └─────────────────────┘      │
-                                                │
-                                                ▼
-                                      ┌──────────────────┐
-                                      │ Structured Lumen │
-                                      │      Brief       │
-                                      └──────────────────┘
-                                                ▲
-                                                │
-                     ┌─────────────────────┐    │
-Screen Region ──────►│    Vision Model     │────┘
-                     └─────────────────────┘
+Whole Page
+   └── Follow-ups use captured page content
 
-Follow-up Question
-        │
-        ▼
-Original Capture Context
-        │
-        ▼
-Selected Text Model
-        │
-        ▼
-Grounded Answer
+Current Selection
+   └── Follow-ups use selected text only
+
+Draw a Region
+   └── Follow-ups use the region-derived context
 ```
 
-### Available Text Systems
+This prevents context leakage between capture modes.
 
-Lumen supports text choices including:
+For example, if a user highlights one paragraph from a long article and asks a question afterward, Lumen does not use unrelated sections of the article to answer it.
+
+---
+
+## Long-Page Handling
+
+Large webpages were one of the main cases considered during the build.
+
+Sending an entire extracted page directly to a model can exceed request or token limits. Lumen therefore processes large contexts in smaller segments before producing the final brief.
+
+```text
+Extract Page
+     ↓
+Clean Content
+     ↓
+Estimate Context Size
+     ↓
+Split When Required
+     ↓
+Process Chunks
+     ↓
+Combine Relevant Information
+     ↓
+Generate Final Structured Brief
+```
+
+This allows Whole Page mode to continue working on substantially longer pages instead of returning a simple context-too-large failure.
+
+---
+
+## Multilingual Output
+
+Lumen currently supports:
+
+* English
+* Hindi
+* Telugu
+* Tamil
+* Bengali
+* Marathi
+
+The selected output language belongs to the current tab.
+
+Changing one tab to Telugu, for example, does not change the default language of another newly opened tab.
+
+When the language is changed after a capture, the same captured context can be regenerated without refreshing the webpage.
+
+---
+
+## Tab-Isolated State
+
+One issue with browser-side AI tools is state leaking between unrelated tabs.
+
+Lumen treats every browser tab as a separate working context.
+
+Each tab maintains its own:
+
+* current brief
+* captured context
+* capture mode
+* follow-up conversation
+* language
+* model selection
+* region context
+
+Example:
+
+```text
+TAB 1
+Python Documentation
+├── Whole Page
+├── English
+├── Existing Summary
+└── Existing Follow-up Chat
+
+
+TAB 2
+Grafana Dashboard
+├── Draw a Region
+├── Telugu
+├── Dashboard Summary
+└── Separate Follow-up Chat
+```
+
+Switching between the two does not overwrite either session.
+
+A new tab starts with a clean state and English as its default output language.
+
+---
+
+## Privacy Redaction
+
+Privacy redaction is applied before transmitted text is processed by the model workflow.
+
+The redaction layer detects common sensitive patterns such as email addresses, phone numbers and similar identifiers and replaces them before the request leaves the extension/server processing path.
+
+The original webpage itself is not modified.
+
+---
+
+## AI Routing
+
+Text and visual captures use separate processing paths.
+
+```text
+                    ┌────────────────────┐
+Whole Page ────────►│                    │
+                    │     Text Model     │──────┐
+Selection ─────────►│                    │      │
+                    └────────────────────┘      │
+                                               │
+                                               ▼
+                                      Structured Lumen Brief
+                                               ▲
+                                               │
+                    ┌────────────────────┐      │
+Region Capture ────►│    Vision Model    │──────┘
+                    └────────────────────┘
+```
+
+Text model options include:
 
 ```text
 llama-3.3-70b-versatile
@@ -174,261 +259,138 @@ groq/compound-mini
 groq/compound
 ```
 
-`groq/compound-mini` and `groq/compound` are treated as **text systems only**.
+`groq/compound-mini` and `groq/compound` are used only for text workflows.
 
-Visual-region requests are routed independently through the configured vision workflow.
+Draw a Region is routed separately through the configured vision model.
 
 ---
 
-# 💬 Context-Grounded Follow-Up Chat
-
-A summary is often only the beginning.
-
-After capturing content, users can continue asking questions directly inside Lumen.
-
-The important distinction is that Lumen preserves the **capture boundary**.
+## Architecture
 
 ```text
-Whole Page
-    ↓
-Follow-ups use Whole Page context
-
-Current Selection
-    ↓
-Follow-ups use ONLY selected-text context
-
-Draw a Region
-    ↓
-Follow-ups remain associated with region-derived context
-```
-
-This prevents a question about one selected paragraph from unexpectedly being answered using unrelated parts of the webpage.
-
----
-
-# 🌐 Multilingual Intelligence
-
-Lumen supports output in:
-
-* 🇬🇧 English
-* 🇮🇳 Hindi
-* 🇮🇳 Telugu
-* 🇮🇳 Tamil
-* 🇮🇳 Bengali
-* 🇮🇳 Marathi
-
-Language behavior is tab-isolated.
-
-For example:
-
-```text
-Tab A
-Language: Telugu
-Summary: Telugu
-
-Tab B
-Language: English
-Summary: English
-```
-
-Changing the language of one tab does not silently modify another tab.
-
-When the requested output language changes, **Regenerate Brief** can reuse the existing capture instead of forcing the user to refresh and recapture the webpage.
-
----
-
-# 🗂️ Tab-Isolated Intelligence
-
-Browser tabs represent different tasks.
-
-Lumen therefore treats every tab as an independent intelligence workspace.
-
-Each tab maintains its own:
-
-* Summary
-* Capture mode
-* Original captured context
-* Follow-up conversation
-* Output language
-* Text model
-* Vision model
-* Region context
-* Relevant behavior state
-
-Switching away from a summarized tab does **not** destroy its existing Lumen session.
-
-When the user returns, the previous summary and conversation remain associated with that tab.
-
-A newly created tab starts clean:
-
-```text
-Panel: Closed
-Language: English
-Summary: Empty
-Chat: Empty
-```
-
-Reusable infrastructure configuration, such as API credentials and backend configuration, can remain stored locally so it does not need to be entered repeatedly.
-
----
-
-# 🔐 Privacy by Design
-
-Lumen is designed around explicit user interaction.
-
-### Privacy principles
-
-* Capture begins only after a Lumen action.
-* Sensitive identifiers in transmitted text are redacted before model processing.
-* Current Selection sends only the selected context.
-* Region mode uses the selected screenshot crop as its visual evidence.
-* API credentials are never committed to the repository.
-* History is stored locally.
-* Lumen does not continuously summarize browsing activity in the background.
-
----
-
-# 🛡️ Failure Honesty
-
-A trustworthy summarizer must also know when it **cannot** access something.
-
-Chrome and websites can restrict extension access in cases such as:
-
-```text
-chrome:// pages
-Browser-internal pages
-Protected frames
-Restricted iframes
-Cross-origin content
-Authentication-protected content
-Unavailable page content
-```
-
-When reliable capture is impossible, Lumen surfaces the limitation rather than generating a summary that appears grounded but is not.
-
----
-
-# 🏗️ Architecture
-
-```text
-┌──────────────────────── Chrome Browser ────────────────────────┐
-│                                                               │
-│  Active Webpage                                               │
-│  │                                                            │
-│  ├── DOM Extractor                                            │
-│  ├── Selected Text Capture                                    │
-│  └── Rectangle Region Selector                                │
-│           │                                                   │
-│           ▼                                                   │
-│  ┌──────────────────────────────┐                             │
-│  │     MV3 Service Worker       │                             │
-│  │                              │                             │
-│  │ • Tab lifecycle              │                             │
-│  │ • Side-panel control         │                             │
-│  │ • Screenshot capture         │                             │
-│  │ • Region coordination        │                             │
-│  └──────────────┬───────────────┘                             │
-│                 │                                             │
-│                 ▼                                             │
-│  ┌──────────────────────────────┐                             │
-│  │      React Side Panel        │                             │
-│  │                              │                             │
-│  │ • Capture modes              │                             │
-│  │ • Structured brief           │                             │
-│  │ • Follow-up chat             │                             │
-│  │ • Per-tab state              │                             │
-│  │ • Language/model settings    │                             │
-│  └──────────────┬───────────────┘                             │
-│                 │                                             │
-└─────────────────┼─────────────────────────────────────────────┘
-                  │
-                  │ HTTPS / Streaming
-                  ▼
-┌───────────────────────────────────────────────────────────────┐
-│                    Lumen Proxy Server                         │
-│                    Express + TypeScript                       │
-│                                                               │
-│  • Request validation                                         │
-│  • Privacy redaction                                          │
-│  • Prompt routing                                             │
-│  • Long-context processing                                    │
-│  • Structured-output validation                               │
-│  • Language validation / repair                               │
-│  • Streaming                                                  │
-│                                                               │
-└──────────────────────────────┬────────────────────────────────┘
-                               │
-                               ▼
-                         ┌──────────┐
-                         │ Groq API │
-                         └──────────┘
+┌────────────────────────── Chrome ──────────────────────────┐
+│                                                           │
+│  Webpage                                                  │
+│     │                                                     │
+│     ├── DOM Extraction                                    │
+│     ├── Selection Capture                                 │
+│     └── Region Selection                                  │
+│                │                                          │
+│                ▼                                          │
+│        MV3 Service Worker                                 │
+│        ├── Tab lifecycle                                  │
+│        ├── Side panel lifecycle                           │
+│        ├── Screenshot capture                             │
+│        └── Region processing                              │
+│                │                                          │
+│                ▼                                          │
+│          React Side Panel                                 │
+│          ├── Capture modes                                │
+│          ├── Structured brief                             │
+│          ├── Follow-up chat                               │
+│          ├── History                                      │
+│          └── Settings                                     │
+│                                                           │
+└───────────────────────┬───────────────────────────────────┘
+                        │
+                        │ HTTPS / Streaming
+                        ▼
+┌──────────────────── Lumen Server ─────────────────────────┐
+│                                                         │
+│  Express + TypeScript                                   │
+│                                                         │
+│  ├── Request validation                                 │
+│  ├── Privacy redaction                                  │
+│  ├── Long-context processing                            │
+│  ├── Model routing                                      │
+│  ├── Structured-output validation                       │
+│  ├── Language validation                                │
+│  └── Streaming                                          │
+│                                                         │
+└────────────────────────┬────────────────────────────────┘
+                         │
+                         ▼
+                      Groq API
 ```
 
 ---
 
-# 🔑 Permissions & Why They Are Needed
+## Tech Stack
 
-| Permission   | Purpose                                                   |
-| ------------ | --------------------------------------------------------- |
-| `activeTab`  | Interacts with the webpage after an explicit Lumen action |
-| `tabs`       | Maintains tab-specific lifecycle and state                |
-| `scripting`  | Supports page capture interactions                        |
-| `storage`    | Stores local sessions, settings, credentials and history  |
-| `commands`   | Registers keyboard shortcuts                              |
-| `sidePanel`  | Provides the native Chrome side-panel experience          |
-| `<all_urls>` | Allows user-requested capture across normal websites      |
+### Extension
 
-Lumen does **not** use these permissions to continuously scan browser activity.
+* Manifest V3
+* React
+* TypeScript
+* Chrome Side Panel API
+* Chrome Storage API
+* Chrome Scripting API
+* Chrome Tabs API
+
+### Server
+
+* Node.js
+* Express
+* TypeScript
+* Groq API
+* Server-Sent Events / streaming responses
+
+### Models
+
+* Groq-hosted text models
+* Compound text systems
+* Dedicated vision model for region analysis
 
 ---
 
-# 📁 Repository Structure
+## Repository Structure
 
 ```text
 apps/
-├── extension/        Chrome MV3 extension source
-├── server/           Express + TypeScript AI proxy
-└── landing/          Lumen landing page
+├── extension/       Chrome extension source
+├── server/          Express + TypeScript backend
+└── landing/         Lumen landing page
 
 packages/
-└── shared/           Shared schemas, types, prompts and utilities
+└── shared/          Shared types, schemas and utilities
 
-extension/            Ready-to-load production extension build
+extension/           Built Chrome extension
 ```
 
 ---
 
-# ⚙️ Local Setup
+## Running the Project
 
-## 1. Install Dependencies
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-## 2. Configure Backend
-
-Copy `.env.example` and configure your Groq credentials.
+Create the backend environment configuration:
 
 ```env
-GROQ_API_KEY=your_key_here
+GROQ_API_KEY=<groq-api-key>
 GROQ_MODEL=llama-3.3-70b-versatile
-GROQ_VISION_MODEL=your_supported_vision_model
+GROQ_VISION_MODEL=<vision-model>
 PORT=3001
 ```
 
-> ⚠️ Never commit a real API key to GitHub.
-
-## 3. Run / Build
+Run the server:
 
 ```bash
 npm run dev:server
+```
+
+Build the project:
+
+```bash
 npm run typecheck
 npm run test
 npm run build
 ```
 
-The production-ready Chrome extension build is available in:
+The built Chrome extension is available in:
 
 ```text
 extension/
@@ -436,266 +398,343 @@ extension/
 
 ---
 
-# 🧩 Load Lumen in Chrome
+## Loading the Extension
 
 1. Open `chrome://extensions`
 2. Enable **Developer mode**
-3. Click **Load unpacked**
-4. Select the repository-level `extension/` directory
-5. Open a normal `http://` or `https://` webpage
-6. Click the **Lumen** extension icon or press:
+3. Select **Load unpacked**
+4. Choose the `extension/` directory
+5. Open a normal webpage
+6. Click the Lumen extension icon or press `Alt + Shift + S`
+
+The side panel opens without automatically scanning the page. The user chooses the required capture mode before content is processed.
+
+---
+
+# Buildathon Validation
+
+The final extension was checked against all **8 provided evaluation pages**.
+
+These pages cover different content structures rather than variations of the same article format.
+
+## Results
+
+|  #  | Evaluation Page                    | Content Type              | Main Test                            |  Result  |
+| :-: | ---------------------------------- | ------------------------- | ------------------------------------ | :------: |
+|  01 | ParadigmIT                         | Product / company webpage | Whole-page extraction                | **PASS** |
+|  02 | The Hindu                          | English news              | Article extraction and summarization | **PASS** |
+|  03 | Eenadu                             | Telugu news               | Regional-language content            | **PASS** |
+|  04 | Python `sched` Documentation       | Technical documentation   | Dense/long technical context         | **PASS** |
+|  05 | Grafana Play — Business Metrics    | Dashboard                 | Region capture and visual analysis   | **PASS** |
+|  06 | Claude Agent SDK Python — PR #1076 | GitHub pull request       | Engineering discussion and decisions | **PASS** |
+|  07 | Attention Is All You Need          | Research PDF              | Research/PDF content                 | **PASS** |
+|  08 | LLMs Reward Expertise              | Long-form article         | Long-context summary and follow-ups  | **PASS** |
+
+### Final Result
 
 ```text
-Alt + Shift + S
+Evaluation pages tested    8
+Passed                     8
+Failed                     0
+
+Result                     8 / 8 PASS
 ```
 
-Chrome **142+** is recommended for the intended per-tab side-panel lifecycle.
+---
+
+## Evaluation Page Details
+
+### 01 — ParadigmIT
+
+**Test:** Whole Page
+**Result:** PASS
+
+Used to verify standard webpage extraction and structured summarization.
+
+Validated:
+
+* readable content extraction
+* structured brief
+* follow-up context
 
 ---
 
-# ✅ Buildathon Validation Results
+### 02 — The Hindu
 
-Lumen was manually checked across the provided/recommended Buildathon evaluation websites.
+**Test:** Whole Page
+**Result:** PASS
 
-The validation set intentionally covers substantially different webpage types instead of testing only on simple articles.
+Used to test Lumen against a real news website with headlines, navigation, article content, dates and named entities.
 
-| #  | Test Type               | Website                                          | Primary Validation                                             | Result |
-| -- | ----------------------- | ------------------------------------------------ | -------------------------------------------------------------- | ------ |
-| 01 | Company / Product       | `paradigmit.ai`                                  | Whole-page extraction and structured summarization             | ✅ PASS |
-| 02 | English News            | `thehindu.com`                                   | Article/news extraction, names, dates and key information      | ✅ PASS |
-| 03 | Regional News           | `eenadu.net`                                     | Regional-language content extraction and multilingual handling | ✅ PASS |
-| 04 | Technical Documentation | Python `sched` documentation                     | Dense technical content, APIs, caveats and structured brief    | ✅ PASS |
-| 05 | Dashboard / Charts      | Grafana Play — Business Metrics                  | Visual-region capture, charts, KPIs and metrics                | ✅ PASS |
-| 06 | Code Review             | Anthropic Claude Agent SDK Python PR #1076       | Pull-request discussion, decisions, changes and risks          | ✅ PASS |
-| 07 | Research Paper          | *Attention Is All You Need* — arXiv `1706.03762` | Research/PDF content and supported capture workflow            | ✅ PASS |
-| 08 | Long-form Engineering   | Sean Goedecke — *LLMs Reward Expertise*          | Dense long-form extraction, summarization and follow-ups       | ✅ PASS |
+Validated:
 
-### Validation Summary
+* article extraction
+* key information
+* names and dates
+* follow-up questions
+
+---
+
+### 03 — Eenadu
+
+**Test:** Whole Page + Multilingual
+**Result:** PASS
+
+Used to verify handling of Telugu webpage content.
+
+Validated:
+
+* Telugu content extraction
+* native-script handling
+* multilingual summary generation
+* language regeneration
+
+---
+
+### 04 — Python `sched` Documentation
+
+**Test:** Whole Page
+**Result:** PASS
+
+Used as a technical-documentation test.
+
+Validated:
+
+* dense technical extraction
+* API-related content
+* long-context processing
+* grounded follow-up answers
+
+---
+
+### 05 — Grafana Play / Business Metrics
+
+**Test:** Draw a Region
+**Result:** PASS
+
+Used to test content that DOM extraction alone cannot represent reliably.
+
+Validated:
+
+* rectangle selection
+* screenshot capture
+* exact region crop
+* chart/KPI interpretation
+* visible numbers and metrics
+* visual follow-up context
+
+---
+
+### 06 — Claude Agent SDK Python PR #1076
+
+**Test:** Whole Page
+**Result:** PASS
+
+Used to test engineering and code-review content.
+
+Validated:
+
+* pull-request context
+* discussion summarization
+* decisions
+* changes
+* risks
+* follow-up questions
+
+---
+
+### 07 — Attention Is All You Need
+
+**Test:** Research / PDF
+**Result:** PASS
+
+Used to test research-oriented content and PDF/browser capture behavior.
+
+Validated:
+
+* research content
+* technical terminology
+* structured summarization
+* region-based analysis where applicable
+
+---
+
+### 08 — LLMs Reward Expertise
+
+**Test:** Whole Page
+**Result:** PASS
+
+Used as the long-form engineering article test.
+
+Validated:
+
+* long-page extraction
+* context processing
+* structured brief
+* grounded follow-up Q&A
+
+---
+
+# Functional Validation
+
+The final build was also checked across the main extension workflows.
+
+| Test                               | Result |
+| ---------------------------------- | :----: |
+| Extension opens through toolbar    |  PASS  |
+| `Alt + Shift + S` opens Lumen      |  PASS  |
+| No automatic scan on opening       |  PASS  |
+| Whole Page capture                 |  PASS  |
+| Current Selection capture          |  PASS  |
+| Selection-only context             |  PASS  |
+| Draw a Region                      |  PASS  |
+| Region screenshot crop             |  PASS  |
+| Structured six-section brief       |  PASS  |
+| Follow-up Q&A                      |  PASS  |
+| Capture-specific follow-up context |  PASS  |
+| Long-page processing               |  PASS  |
+| Streaming responses                |  PASS  |
+| English output                     |  PASS  |
+| Hindi output                       |  PASS  |
+| Telugu output                      |  PASS  |
+| Tamil output                       |  PASS  |
+| Bengali output                     |  PASS  |
+| Marathi output                     |  PASS  |
+| Language regeneration              |  PASS  |
+| Privacy redaction                  |  PASS  |
+| Tab isolation                      |  PASS  |
+| Tab state persistence              |  PASS  |
+| Clean state on new tab             |  PASS  |
+| English default on new tab         |  PASS  |
+| Local history                      |  PASS  |
+| Restricted-page handling           |  PASS  |
+
+---
+
+## Failure Handling
+
+Some browser surfaces cannot be captured by a Chrome extension because of browser security restrictions.
+
+Examples include Chrome internal pages and other restricted browser contexts.
+
+Lumen handles these cases explicitly instead of generating a response from unavailable content.
+
+This distinction is important because a failed capture should remain a failed capture — it should not become an apparently valid AI summary.
+
+---
+
+# Demo Flow
+
+The final demo is designed around four different capabilities rather than repeatedly summarizing similar pages.
+
+### 1. Long Page
+
+Open a long article or documentation page.
 
 ```text
-Test Pages Checked : 8
-Passed             : 8
-Failed             : 0
-Result             : 8 / 8 PASS
-```
-
-> **All listed Buildathon validation websites were successfully checked with Lumen.**
-
----
-
-# 🧪 Detailed Validation Matrix
-
-The tests covered more than whether the extension simply opened on each website.
-
-| Validation Area                       | Status |
-| ------------------------------------- | :----: |
-| Extension opens correctly             |    ✅   |
-| Whole Page capture                    |    ✅   |
-| Current Selection capture             |    ✅   |
-| Strict selection-only context         |    ✅   |
-| Draw a Region workflow                |    ✅   |
-| Structured summary generation         |    ✅   |
-| Summary grounding                     |    ✅   |
-| Key Points generation                 |    ✅   |
-| Actions extraction                    |    ✅   |
-| Numbers & Metrics extraction          |    ✅   |
-| Decisions extraction                  |    ✅   |
-| Risks extraction                      |    ✅   |
-| Follow-up Q&A                         |    ✅   |
-| Capture-specific follow-up grounding  |    ✅   |
-| Long-context handling                 |    ✅   |
-| Multilingual output                   |    ✅   |
-| Language regeneration workflow        |    ✅   |
-| Tab-specific state                    |    ✅   |
-| State persistence when switching tabs |    ✅   |
-| Clean new-tab state                   |    ✅   |
-| English default on new tabs           |    ✅   |
-| Privacy redaction workflow            |    ✅   |
-| Dashboard/chart region analysis       |    ✅   |
-| Local history workflow                |    ✅   |
-| Restricted-page failure handling      |    ✅   |
-
----
-
-# 🌍 Website Coverage
-
-### 1. ParadigmIT
-
-**Type:** Company / product webpage
-**Result:** ✅ Passed
-
-Validated Lumen's ability to extract normal webpage content and transform it into the standard six-section intelligence brief.
-
-### 2. The Hindu
-
-**Type:** English news
-**Result:** ✅ Passed
-
-Validated article-oriented summarization and extraction of important entities, events, dates, key points and available metrics.
-
-### 3. Eenadu
-
-**Type:** Telugu / regional-language content
-**Result:** ✅ Passed
-
-Validated handling of native-script webpage content and Lumen's multilingual workflow.
-
-### 4. Python Documentation — `sched`
-
-**Type:** Technical documentation
-**Result:** ✅ Passed
-
-Validated structured extraction from dense technical documentation containing API descriptions, parameters, concepts and caveats.
-
-### 5. Grafana Play — Business Metrics
-
-**Type:** Dashboard / data visualization
-**Result:** ✅ Passed
-
-Validated **Draw a Region** against dashboard content including charts, KPIs, legends, tables and visible metrics.
-
-### 6. Anthropic Claude Agent SDK Python — PR #1076
-
-**Type:** GitHub pull request / code review
-**Result:** ✅ Passed
-
-Validated Lumen against engineering discussion where important information can include implementation changes, decisions, concerns and risks.
-
-### 7. Attention Is All You Need
-
-**Type:** Research paper / PDF
-**Result:** ✅ Passed
-
-Validated Lumen's supported research/PDF capture workflow against the landmark Transformer research paper.
-
-### 8. LLMs Reward Expertise
-
-**Type:** Long-form engineering article
-**Result:** ✅ Passed
-
-Validated dense long-form summarization and grounded follow-up analysis.
-
----
-
-# 🎬 Buildathon Demo Flow
-
-A concise Lumen demonstration can show the complete value proposition in four steps.
-
-### Step 1 — Whole Page Intelligence
-
-Open a long article or technical page.
-
-```text
-Click Lumen
-      ↓
 Whole Page
-      ↓
+    ↓
+Extract
+    ↓
 Structured Brief
+    ↓
+Follow-up Question
 ```
 
-Show:
+This demonstrates page extraction, long-context handling and grounded Q&A.
 
-**Summary → Key Points → Actions → Numbers & Metrics → Decisions → Risks**
+### 2. Strict Selection
 
-### Step 2 — Prove Context Grounding
+Highlight a specific paragraph and use **Current Selection**.
 
-Highlight one specific paragraph.
+Ask a question whose answer exists elsewhere on the webpage but not inside the selected paragraph.
 
-Select:
+Lumen remains inside the selected context.
 
-```text
-Current Selection
-```
+This demonstrates that selection mode is actually isolated rather than being a second trigger for whole-page summarization.
 
-Generate the brief and ask a follow-up question.
+### 3. Dashboard
 
-The answer remains grounded in the selected text rather than silently using the entire webpage.
+Open the Grafana evaluation page and choose **Draw a Region**.
 
-### Step 3 — Understand Visual Information
+Draw a rectangle around a chart or KPI group.
 
-Open the Grafana dashboard.
+Lumen analyzes the selected visual region and returns the visible trends and metrics.
 
-Select:
+### 4. Tab Isolation
 
-```text
-Draw a Region
-```
+Keep an existing Lumen summary open in one tab and open another webpage in a new tab.
 
-Draw a rectangle around a chart/KPI region.
+The new tab begins clean.
 
-Lumen captures the region and analyzes the visible metrics and trends using the vision workflow.
+Returning to the first tab restores its previous summary and conversation.
 
-### Step 4 — Prove Tab Isolation
-
-Keep the completed summary open.
-
-Open another browser tab.
-
-The new tab begins with:
-
-```text
-Panel: Closed
-Language: English
-Summary: Empty
-Chat: Empty
-```
-
-Return to the original tab.
-
-Its previous Lumen session remains available.
+This demonstrates that browser tabs behave as independent Lumen sessions.
 
 ---
 
-# 📊 Evaluation Philosophy
+# Design Decisions
 
-Lumen is designed around four principles that matter for real on-screen intelligence.
+A few decisions were kept intentionally strict.
 
-### 1. Grounded
+### Capture is explicit
 
-The answer should come from what the user captured — not unrelated context.
+Opening Lumen does not immediately scan the page.
 
-### 2. Structured
+The user first chooses what should become context.
 
-Users should not need to read another wall of AI-generated text to understand the original wall of text.
+### Selection means selection
 
-### 3. Context-Aware
+Current Selection does not silently include the surrounding webpage.
 
-A selected paragraph, complete webpage, and visual dashboard are fundamentally different inputs and should be handled differently.
+### Visual content has a separate path
 
-### 4. Honest
+Charts and dashboards are not forced through DOM text extraction when the relevant information is visual.
 
-If Lumen cannot reliably access something, it should say so instead of pretending that it can.
+### Tabs are independent
+
+Changing the task in one browser tab should not affect another.
+
+### Missing information stays missing
+
+The structured format does not justify inventing content just to fill all six sections.
+
+### Failed capture stays a failure
+
+If reliable page content cannot be obtained, Lumen reports the limitation.
 
 ---
 
-# 🏆 Why Lumen
+# What Lumen Changes
 
-Lumen is not intended to be another chatbot placed inside a browser.
-
-The core difference is the interaction model:
+Without Lumen:
 
 ```text
-Traditional AI Workflow
-
 Webpage
    ↓
-Select
+Find relevant content
    ↓
 Copy
    ↓
-Open AI
+Switch tab
+   ↓
+Open chatbot
    ↓
 Paste
    ↓
-Explain Context
+Explain what the content is
    ↓
 Ask
+   ↓
+Switch back
 ```
 
 With Lumen:
 
 ```text
 Webpage
+   ↓
+Choose what matters
    ↓
 Lumen
    ↓
@@ -704,35 +743,30 @@ Understand
 Ask
 ```
 
-The user's screen becomes the context.
-
 ---
 
-# 🎯 Project Goal
-
-Lumen is built around one simple principle:
-
-> **The information is already on the screen. The user should not have to leave the screen to understand it.**
-
----
-
-## 🧪 Final Buildathon Status
+# Final Build Status
 
 ```text
-Chrome Extension       ✅ Working
-Manifest V3            ✅ Implemented
-Whole Page             ✅ Passed
-Current Selection      ✅ Passed
-Draw a Region          ✅ Passed
-Follow-up Q&A          ✅ Passed
-Long Context           ✅ Passed
-Multilingual Output    ✅ Passed
-Privacy Redaction      ✅ Passed
-Tab Isolation          ✅ Passed
-State Persistence      ✅ Passed
-Failure Honesty        ✅ Implemented
+Manifest V3                 PASS
+Whole Page                  PASS
+Current Selection           PASS
+Draw a Region               PASS
+Structured Brief            PASS
+Follow-up Q&A               PASS
+Long Context                PASS
+Streaming                   PASS
+Multilingual Output         PASS
+Privacy Redaction           PASS
+Tab Isolation               PASS
+State Persistence           PASS
+Failure Handling            PASS
 
-Validation Websites    8 / 8 Passed
+Evaluation Websites         8 / 8 PASS
 ```
 
-**Lumen — Read less. Understand more. Act faster.**
+---
+
+## Lumen
+
+**The information is already on the screen. Understanding it shouldn't require leaving the screen.**
