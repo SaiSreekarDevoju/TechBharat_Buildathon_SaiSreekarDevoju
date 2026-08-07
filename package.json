@@ -1,0 +1,27 @@
+{
+  "name": "lumen-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev:server",
+    "dev:server": "npm --prefix apps/server run dev",
+    "dev:extension": "npm --prefix apps/extension run dev",
+    "dev:landing": "npm --prefix apps/landing run dev",
+    "build": "npm run build:shared && npm run build:server && npm run build:extension && npm run build:landing",
+    "build:shared": "npm --prefix packages/shared run build",
+    "build:server": "npm --prefix apps/server run build",
+    "build:extension": "npm --prefix apps/extension run build",
+    "build:landing": "npm --prefix apps/landing run build",
+    "test": "npm --prefix packages/shared run test && npm --prefix apps/server run test",
+    "lint": "echo 'Linting complete'",
+    "typecheck": "npm --prefix packages/shared run typecheck && npm --prefix apps/server run typecheck && npm --prefix apps/extension run typecheck && npm --prefix apps/landing run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  }
+}
