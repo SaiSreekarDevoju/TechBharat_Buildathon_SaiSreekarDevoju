@@ -771,6 +771,13 @@ Evaluation Websites         8 / 8 PASS
 
 **The information is already on the screen. Understanding it shouldn't require leaving the screen.**
 
+##Screenshots
 
-<img width="1904" height="873" alt="Screenshot 2026-08-07 145518" src="https://github.com/user-attachments/assets/56ca1fa3-201f-4dfe-8572-97caa8b789b5" />
+<img width="1904" height="906" alt="Screenshot 2026-08-07 145501" src="https://github.com/user-attachments/assets/c1681cc4-ee9f-46cc-8909-68f192caffec" />
+
+<img width="1904" height="873" alt="Screenshot 2026-08-07 145518" src="https://github.com/user-attachments/assets/b783a6cf-d33f-46c4-b687-d731a49cceae" />
+
+<img width="465" height="912" alt="Screenshot 2026-08-07 145413" src="https://github.com/user-attachments/assets/a0978b93-c9e5-415c-892d-6051818de2ed" />
+
+<img width="465" height="912" alt="Screenshot 2026-08-07 145413" src="https://github.com/user-attachments/assets/cd13280b-cc6a-4f2b-928f-dc80fbc061ff" />
 
